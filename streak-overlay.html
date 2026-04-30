@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap');
+        body { background: transparent; margin: 0; padding: 20px; overflow: hidden; font-family: 'Oswald', sans-serif; color: white; }
+        
+        .container { display: flex; align-items: center; filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.8)); }
+        
+        #portrait { width: 130px; height: auto; margin-right: 25px; border-left: 4px solid #ef4444; padding-left: 10px; }
+        
+        .text-box { display: flex; flex-direction: column; justify-content: center; }
+        
+        .custom-title { font-size: 20px; color: #ef4444; letter-spacing: 4px; text-transform: uppercase; margin-bottom: -5px; }
+        
+        .name { font-size: 45px; text-transform: uppercase; line-height: 1; padding-bottom: 5px; border-bottom: 4px solid rgba(255,255,255,0.1); width: fit-content; }
+        
+        .streak { font-size: 65px; margin-top: 5px; }
+        .streak span { color: #ef4444; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <img id="portrait" src="" alt="">
+    <div class="text-box">
+        <div class="custom-title" id="customTitle">STREAK</div>
+        <div class="name" id="killerName">ESPERANDO...</div>
+        <div class="streak">TOTAL: <span id="streakCount">0</span></div>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyBS7uwcZNsSOMtfwIJzewDeACX22fWeaBY",
+        authDomain: "dbd-overlay.firebaseapp.com",
+        projectId: "dbd-overlay",
+        databaseURL: "https://dbd-overlay-default-rtdb.firebaseio.com"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    db.ref('winstreak_data').on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+            document.getElementById('customTitle').innerText = data.titulo || "STREAK";
+            document.getElementById('killerName').innerText = data.nombreKiller || "---";
+            document.getElementById('streakCount').innerText = data.streak || 0;
+            if(data.killerId) {
+                document.getElementById('portrait').src = `img/${data.killerId}.png`;
+            }
+        }
+    });
+</script>
+</body>
+</html>
